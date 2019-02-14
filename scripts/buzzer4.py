@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#encording: utf8
+#encoding: utf8
 import rospy, actionlib
 from std_msgs.msg import UInt16
 from pimouse_ros.msg import MusicAction, MusicResult, MusicFeedback

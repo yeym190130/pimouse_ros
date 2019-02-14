@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#encording: utf8
+#encoding: utf8
 import sys, rospy
 from pimouse_ros.msg import LightSensorValues
 
