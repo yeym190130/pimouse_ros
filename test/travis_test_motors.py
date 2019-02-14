@@ -32,7 +32,7 @@ class MotorTest(unittest.TestCase):
 		m=Twist()
 		m.linear.x=0.1414
 		m.angular.z=1.57
-		fro i in range(10)
+		for i in range(10)
 			pub.publish(m)
 			time.sleep(0.1)
 
