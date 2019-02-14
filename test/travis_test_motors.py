@@ -5,8 +5,15 @@ import rosnode, rospy
 import time
 from pimouse_ros.msg import MotorFreqs
 from geometry_msgs.msg import Twist
+from std_srvs.srv import Trigger, TriggerResponse
 
 class MotorTest(unittest.TestCase):
+	def setUo(self):
+		rospy.wait_for_service('/motor_on')
+		rospy.wait_for_service('/motor_off')
+		on=rospy.ServiceProxy('/motor_on',Trigger)
+		ret=on()
+
 	def file_check(self,dev,value,message):
 		with open("/dev/"+dev,"r") as f:
 			self.assertEqual(f.readline(),str(value)+"\n",message)
@@ -24,8 +31,8 @@ class MotorTest(unittest.TestCase):
 			pub.publish(m)
 			time.sleep(0.1)
 
-		self.file_check("rtmotor_raw_l0",m.left_hz,"wrong left value from motor_raw_l0")
-		self.file_check("rtmotor_raw_r0",m.right_hz,"wrong right value from motor_raw_r0")
+		self.file_check("rtmotor_raw_l0",m.left_hz,"wrong left value from motor_raw")
+		self.file_check("rtmotor_raw_r0",m.right_hz,"wrong right value from motor_raw")
 
 	def test_put_cmd_vel(self):
 		pub=rospy.Publisher('/cmd_vel',Twist)
@@ -43,8 +50,25 @@ class MotorTest(unittest.TestCase):
                 self.file_check("rtmotor_raw_r0",0,"don't stop after 1[s]")
                 self.file_check("rtmotor_raw_l0",0,"don't stop after 1[s]")
 
+	def test_on_off(self):
+		off=rospy.ServiceProxy('/motor_off',Trigger)
+		ret=off()
+		self.assertEqual(ret.success,True,"motor off does not succeeded")
+		self.assertEqual(ret.message,"OFF","motor off wrong message")
+		with open("/dev/rtmotoren0","r") as f:
+			data=f.readline()
+			self.assertEqual(data,"0\n","wrong value in rtmotor0 at motor off")
+
+                on=rospy.ServiceProxy('/motor_on',Trigger)
+                ret=on()
+                self.assertEqual(ret.success,True,"motor on does not succeeded")
+                self.assertEqual(ret.message,"ON","motor on wrong message")
+                with open("/dev/rtmotoren0","r") as f:
+                        data=f.readline()
+                        self.assertEqual(data,"0\n","wrong value in rtmotor0 at motor on")
+
 if __name__=='__main__':
-	time.sleep(3)
+	#time.sleep(3)
 	rospy.init_node('travis_test_motors')
 	rostest.rosrun('pimouse_ros','travis_test_motors',MotorTest)
 
