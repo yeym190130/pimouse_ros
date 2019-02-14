@@ -5,11 +5,11 @@ import rosnode, rospy
 import time
 from pimouse_ros.msg import LightSensorValues
 
-class Lightsensortest(unittest.Testcase):
+class Lightsensortest(unittest.TestCase):
 	def setUp(self):
 		self.count = 0
-		rospy.Subscriber('/lightsensors', LightSensorValues,sself.callbask)
-		self.values = LightSensorvalues()
+		rospy.Subscriber('/lightsensors', LightSensorValues,self.callbask)
+		self.values = LightSensorValues()
 
 	def callback(self,data):
 		self.count += 1
