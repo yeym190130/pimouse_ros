@@ -13,7 +13,7 @@ class MotorTest(unittest.TestCase):
 
 	def test_node_exist(self):
 		nodes=rosnode.get_node_names()
-		self.assertIn('/motors',"node does not exist")
+		self.assertIn('/motors',nodes,"node does not exist")
 
 	def test_put_freq(self):
 		pub=rospy.Publisher('/motor_raw',MotorFreqs)
